@@ -1,0 +1,24 @@
+.burgerConstructor{
+    width: 600px;
+    margin-top: 100px;
+    margin-left: 40px;
+}
+.totalSum{
+    width: 100%;
+    padding-right: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: end;
+}
+.totalSum button{
+    margin-left: 40px;
+    margin-right: 16px;
+}
+
+.crateBurger {
+    display: flex; 
+    flex-direction: column; 
+    gap: 10px;
+    margin-left: 0;
+    padding-left: 0;
+}
