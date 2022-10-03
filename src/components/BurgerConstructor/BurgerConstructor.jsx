@@ -2,71 +2,90 @@ import PropTypes from "prop-types";
 import {
   CurrencyIcon,
   Button,
+  ConstructorElement,
+  DragIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
-import IngredientCustom from "../IngredientCustom/IngredientCustom";
 
-import style from "./BurgerConstructor.module.css";
+import style from "./burgerConstructor.module.css";
+
+const list = {
+  bun: "60666c42cc7b410027a1a9b2",
+  ingredients: ["60666c42cc7b410027a1a9bf", "60666c42cc7b410027a1a9be"],
+};
 
 function BurgerConstructor(props) {
-  let totalPrice = 0;
+  const state = {
+    price: 0,
+    bun: {},
+    ingredients: [],
+  };
 
-  function createBurger() {
-    let keyId = 1;
-    let list = {
-      bun: "60666c42cc7b410027a1a9b2",
-      ingredients: ["60666c42cc7b410027a1a9bf", "60666c42cc7b410027a1a9be"],
+  function getIngredients() {
+    const bun = props.ingredients.find((elem) => elem._id === list.bun);
+    state.bun = {
+      key: 1,
+      text: bun.name,
+      price: bun.price,
+      thumbnail: bun.image,
     };
-    let burger = [];
 
-    let bun = props.ingredients.find(
-      (elem) => elem._id === "60666c42cc7b410027a1a9b2"
-    );
-    burger.push(
-      <IngredientCustom
-        key={keyId}
-        position="top"
-        text={bun.name}
-        price={bun.price}
-        thumbnail={bun.image}
-      />
-    );
-
-    list.ingredients.map((elem) => {
-      keyId++;
-      let ingredient = props.ingredients.find((i) => i._id === elem);
+    list.ingredients.map((elem, index) => {
+      const ingredient = props.ingredients.find((i) => i._id === elem);
       if (ingredient) {
-        totalPrice += ingredient.price;
-        burger.push(
-          <IngredientCustom
-            key={keyId}
-            text={ingredient.name}
-            price={ingredient.price}
-            thumbnail={ingredient.image}
-          />
-        );
+        state.ingredients.push({
+          key: index + 1,
+          text: ingredient.name,
+          price: ingredient.price,
+          thumbnail: ingredient.image,
+        });
       }
     });
 
-    keyId++;
-    burger.push(
-      <IngredientCustom
-        key={keyId}
-        position="bottom"
-        text={bun.name}
-        price={bun.price}
-        thumbnail={bun.image}
-      />
-    );
-
-    totalPrice += bun.price;
-    return burger;
+    state.price =
+      state.bun.price * 2 +
+      state.ingredients.reduce((sum, i) => sum + i.price, 0);
   }
+  getIngredients();
 
   return (
     <section className={style.burgerConstructor}>
-      <ul className={style.crateBurger}>{createBurger()}</ul>
+      <ul className={style.crateBurger}>
+        <li key={state.bun.key} className={style.list}>
+          <ConstructorElement
+            type="top"
+            isLocked={true}
+            text={state.bun.text}
+            price={state.bun.price}
+            thumbnail={state.bun.thumbnail}
+          />
+        </li>
+        {state.ingredients.map((i) => (
+          <li key={i.key} className={style.list}>
+            <div className="mr-1">
+              <DragIcon type="primary" />{" "}
+            </div>
+            <ConstructorElement
+              type={i.position}
+              isLocked={false}
+              text={i.text}
+              price={i.price}
+              thumbnail={i.thumbnail}
+            />
+          </li>
+        ))}
+
+        <li key={state.bun.key + 1} className={style.list}>
+          <ConstructorElement
+            type="button"
+            isLocked={true}
+            text={state.bun.text}
+            price={state.bun.price}
+            thumbnail={state.bun.thumbnail}
+          />
+        </li>
+      </ul>
       <div className={style.totalSum}>
-        <p className="text text_type_digits-medium mr-2">{totalPrice}</p>
+        <p className="text text_type_digits-medium mr-2">{state.price}</p>
         <CurrencyIcon type="primary" />
         <Button type="primary" size="large">
           Оформить заказ

@@ -5,3 +5,9 @@
   margin-top: 24px;
   margin-left: 16px;
 }
+
+.price {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

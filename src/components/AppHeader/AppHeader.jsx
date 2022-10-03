@@ -5,28 +5,28 @@ import {
   ProfileIcon,
   Button,
 } from "@ya.praktikum/react-developer-burger-ui-components";
-import style from "./style.module.css";
+import style from "./appHeader.module.css";
 
 function AppHeader() {
   return (
     <header className={style.appHeader}>
-      <ul className={style.wrapper}>
-        <li className={style.constrBurger}>
+      <div className={style.wrapper}>
+        <a href="#" className={style.constrBurger}>
           <BurgerIcon className="pr-2" type="secondary" />
           <p className="text text_type_main-default pl-2">Конструктор</p>
-        </li>
-        <li className={style.listOrder}>
+        </a>
+        <a href="#" className={style.listOrder}>
           <ListIcon type="secondary" />
           <p className="text text_type_main-default pl-2">Лента заказов</p>
-        </li>
-        <li className={style.logo}>
+        </a>
+        <a href="#" className={style.logo}>
           <Logo />
-        </li>
-        <li className={style.userCabinet}>
+        </a>
+        <a href="#" className={style.userCabinet}>
           <ProfileIcon type="secondary" />
           <p className="text text_type_main-default pl-2">Личный кабинет</p>
-        </li>
-      </ul>
+        </a>
+      </div>
     </header>
   );
 }

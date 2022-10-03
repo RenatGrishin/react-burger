@@ -2,7 +2,7 @@ import BurgerTabs from "../BurgerTabs/BurgerTabs";
 import Ingredient from "../Ingredient/Ingredient";
 import PropTypes from "prop-types";
 
-import style from "./BurgerIngredients.module.css";
+import style from "./burgerIngredients.module.css";
 
 function BurgerIngredients(props) {
   function findCategory(category) {

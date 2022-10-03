@@ -1,18 +1,12 @@
 import PropTypes from "prop-types";
 import { CurrencyIcon } from "@ya.praktikum/react-developer-burger-ui-components";
-import style from "./Ingredient.module.css";
+import style from "./ingredient.module.css";
 
 function Ingredient(props) {
   return (
     <li className={style.card}>
-      <img className="mb-1" src={props.image} />
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
+      <img alt={props.name} className="mb-1" src={props.image} />
+      <div className={style.price}>
         <p className="text text_type_digits-default mr-3">{props.price}</p>
         <CurrencyIcon type="primary" />
       </div>
