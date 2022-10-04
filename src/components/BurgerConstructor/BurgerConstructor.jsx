@@ -1,4 +1,5 @@
 import PropTypes from "prop-types";
+import { burgerPropTypes } from "../../prop-types";
 import {
   CurrencyIcon,
   Button,
@@ -12,34 +13,20 @@ const list = {
   bun: "60666c42cc7b410027a1a9b2",
   ingredients: ["60666c42cc7b410027a1a9bf", "60666c42cc7b410027a1a9be"],
 };
+const state = {
+  price: 0,
+  bun: {},
+  ingredients: [],
+};
 
 function BurgerConstructor(props) {
-  const state = {
-    price: 0,
-    bun: {},
-    ingredients: [],
-  };
-
   function getIngredients() {
-    const bun = props.ingredients.find((elem) => elem._id === list.bun);
-    state.bun = {
-      key: 1,
-      text: bun.name,
-      price: bun.price,
-      thumbnail: bun.image,
-    };
+    state.bun = props.ingredients.find((elem) => elem._id === list.bun);
 
-    list.ingredients.map((elem, index) => {
-      const ingredient = props.ingredients.find((i) => i._id === elem);
-      if (ingredient) {
-        state.ingredients.push({
-          key: index + 1,
-          text: ingredient.name,
-          price: ingredient.price,
-          thumbnail: ingredient.image,
-        });
-      }
-    });
+    state.ingredients = props.ingredients.filter(
+      (ingredient) =>
+        ingredient.type !== "bun" && list.ingredients.includes(ingredient._id)
+    );
 
     state.price =
       state.bun.price * 2 +
@@ -50,37 +37,37 @@ function BurgerConstructor(props) {
   return (
     <section className={style.burgerConstructor}>
       <ul className={style.crateBurger}>
-        <li key={state.bun.key} className={style.list}>
+        <li key="b1" className={style.list}>
           <ConstructorElement
             type="top"
             isLocked={true}
-            text={state.bun.text}
+            text={state.bun.name}
             price={state.bun.price}
-            thumbnail={state.bun.thumbnail}
+            thumbnail={state.bun.image}
           />
         </li>
         {state.ingredients.map((i) => (
-          <li key={i.key} className={style.list}>
+          <li key={i._id} className={style.list}>
             <div className="mr-1">
               <DragIcon type="primary" />{" "}
             </div>
             <ConstructorElement
               type={i.position}
               isLocked={false}
-              text={i.text}
+              text={i.name}
               price={i.price}
-              thumbnail={i.thumbnail}
+              thumbnail={i.image}
             />
           </li>
         ))}
 
-        <li key={state.bun.key + 1} className={style.list}>
+        <li key="b2" className={style.list}>
           <ConstructorElement
             type="button"
             isLocked={true}
-            text={state.bun.text}
+            text={state.bun.name}
             price={state.bun.price}
-            thumbnail={state.bun.thumbnail}
+            thumbnail={state.bun.image}
           />
         </li>
       </ul>
@@ -96,22 +83,8 @@ function BurgerConstructor(props) {
 }
 
 BurgerConstructor.propTypes = {
-  ingredients: PropTypes.arrayOf(
-    PropTypes.shape({
-      __v: PropTypes.number,
-      _id: PropTypes.string,
-      calories: PropTypes.number,
-      carbohydrates: PropTypes.number,
-      fat: PropTypes.number,
-      image: PropTypes.string,
-      image_large: PropTypes.string,
-      image_mobile: PropTypes.string,
-      name: PropTypes.string,
-      price: PropTypes.number,
-      proteins: PropTypes.number,
-      type: PropTypes.string,
-    })
-  ),
+  ingredients: PropTypes.arrayOf(PropTypes.shape(burgerPropTypes).isRequired)
+    .isRequired,
 };
 
 export default BurgerConstructor;
