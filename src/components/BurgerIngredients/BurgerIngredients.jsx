@@ -5,7 +5,17 @@ import { burgerPropTypes } from "../../prop-types";
 
 import style from "./burgerIngredients.module.css";
 
+const state = {
+  bun: [],
+  mains: [],
+  sauces: [],
+};
+
 function BurgerIngredients(props) {
+  state.bun = props.ingredients.filter((arr) => arr.type === "bun");
+  state.mains = props.ingredients.filter((arr) => arr.type === "main");
+  state.sauces = props.ingredients.filter((arr) => arr.type === "sauce");
+
   function findCategory(category) {
     return props.ingredients.filter((arr) => arr.type === category);
   }
@@ -19,7 +29,7 @@ function BurgerIngredients(props) {
         <div>
           <p className="text text_type_main-medium">Булки</p>
           <ul className={style.ingredientsList}>
-            {findCategory("bun").map((elem) => (
+            {state.bun.map((elem) => (
               <Ingredient
                 key={elem._id}
                 id={elem._id}
@@ -34,7 +44,7 @@ function BurgerIngredients(props) {
         <div>
           <p className="text text_type_main-medium">Соусы</p>
           <ul className={style.ingredientsList}>
-            {findCategory("sauce").map((elem) => (
+            {state.sauces.map((elem) => (
               <Ingredient
                 key={elem._id}
                 id={elem._id}
@@ -49,7 +59,7 @@ function BurgerIngredients(props) {
         <div>
           <p className="text text_type_main-medium">Начинки</p>
           <ul className={style.ingredientsList}>
-            {findCategory("main").map((elem) => (
+            {state.mains.map((elem) => (
               <Ingredient
                 key={elem._id}
                 id={elem._id}
