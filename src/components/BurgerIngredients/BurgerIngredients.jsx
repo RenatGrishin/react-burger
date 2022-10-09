@@ -5,16 +5,10 @@ import { burgerPropTypes } from "../../prop-types";
 
 import style from "./burgerIngredients.module.css";
 
-const state = {
-  bun: [],
-  mains: [],
-  sauces: [],
-};
-
 function BurgerIngredients(props) {
-  state.bun = props.ingredients.filter((arr) => arr.type === "bun");
-  state.mains = props.ingredients.filter((arr) => arr.type === "main");
-  state.sauces = props.ingredients.filter((arr) => arr.type === "sauce");
+  const bun = props.ingredients.filter((arr) => arr.type === "bun");
+  const mains = props.ingredients.filter((arr) => arr.type === "main");
+  const sauces = props.ingredients.filter((arr) => arr.type === "sauce");
 
   return (
     <section className={style.burgerIngredients}>
@@ -25,7 +19,7 @@ function BurgerIngredients(props) {
         <div>
           <p className="text text_type_main-medium">Булки</p>
           <ul className={style.ingredientsList}>
-            {state.bun.map((elem) => (
+            {bun.map((elem) => (
               <Ingredient key={elem._id} data={elem} />
             ))}
           </ul>
@@ -34,7 +28,7 @@ function BurgerIngredients(props) {
         <div>
           <p className="text text_type_main-medium">Соусы</p>
           <ul className={style.ingredientsList}>
-            {state.sauces.map((elem) => (
+            {sauces.map((elem) => (
               <Ingredient key={elem._id} data={elem} />
             ))}
           </ul>
@@ -43,7 +37,7 @@ function BurgerIngredients(props) {
         <div>
           <p className="text text_type_main-medium">Начинки</p>
           <ul className={style.ingredientsList}>
-            {state.mains.map((elem) => (
+            {mains.map((elem) => (
               <Ingredient key={elem._id} data={elem} />
             ))}
           </ul>

@@ -9,23 +9,3 @@
   justify-content: center;
   z-index: 1000;
 }
-
-.modal {
-  box-sizing: border-box;
-  width: 720px;
-  padding: 40px;
-  border-radius: 40px;
-  text-align: center;
-  background-color: #1c1c21;
-  position: relative;
-  z-index: 1100;
-}
-
-.close {
-  position: absolute;
-  width: max-content;
-  height: max-content;
-  top: 60px;
-  right: 40px;
-  cursor: pointer;
-}
