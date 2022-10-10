@@ -39,8 +39,8 @@ function BurgerConstructor(props) {
   }
   getIngredients();
 
-  function toggleModal() {
-    setModal(!modal);
+  function toggleModal(val) {
+    setModal(val);
   }
 
   return (

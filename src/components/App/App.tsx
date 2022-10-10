@@ -1,9 +1,9 @@
 import style from './App.module.css';
-import AppHeader from './components/AppHeader/AppHeader';
-import BurgerIngredients from './components/BurgerIngredients/BurgerIngredients';
-import BurgerConstructor from './components/BurgerConstructor/BurgerConstructor';
+import AppHeader from '../AppHeader/AppHeader';
+import BurgerIngredients from '../BurgerIngredients/BurgerIngredients';
+import BurgerConstructor from '../BurgerConstructor/BurgerConstructor';
 import { useEffect, useState } from 'react';
-import {connectBurgerApi} from './utils/burger-api.js'
+import {connectBurgerApi} from '../../utils/burger-api.js'
 
 function App() {
   const [status, setStatus] = useState("Материализация ингредиентов...");
@@ -11,7 +11,15 @@ function App() {
   const [loadingData, setLoadingData] = useState(true);
 
   useEffect(()=>{
-    connectBurgerApi( setData, setLoadingData, setStatus );
+    connectBurgerApi()
+    .then(data=>{
+      setData(data.data);
+      setLoadingData(false);
+    })
+    .catch((error) => {
+      setStatus("Мы не можем найти ингредиенты :(");
+      console.error(error);
+    })
   }, [] );
 
   

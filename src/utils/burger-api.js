@@ -1,23 +1,10 @@
 import { BURGER_API_URL } from './connect.js'
 
-export function connectBurgerApi( setData, setLoadingData, setStatus ){
-    fetch(`${BURGER_API_URL}/api/ingredients`)
-    .then( res => checkResponse(res, setStatus)
-      )
-    .then(data=>{
-      setData(data.data);
-      setLoadingData(false);
-    })
-    .catch((error) => {
-      setStatus("Мы не можем найти ингредиенты :(")
-      console.error(error)
-    });
+export function connectBurgerApi(){
+  return fetch(`${BURGER_API_URL}/api/ingredients`)
+  .then( res => checkResponse(res) )
 }
 
-function checkResponse (res, setStatus) {
-    if( res.ok) {
-        return res.json()
-    }
-    setStatus("Мы не можем найти ингредиенты :(")
-    return res.json().then((err) => Promise.reject(err))
-  }
+function checkResponse (res) {
+  return res.ok ? res.json() : res.json().then((err) => Promise.reject(err));
+}
