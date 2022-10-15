@@ -1,0 +1,41 @@
+.appHeader {
+  width: 100%;
+  background-color: #1c1c21;
+}
+.wrapper {
+  width: 1280px;
+  margin: 0 auto;
+  padding-top: 16px;
+  padding-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.wrapper a {
+  text-decoration: none;
+  color: #8585ad;
+}
+
+.headerSubmit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #8585ad;
+  padding: 20px;
+}
+.constrBurger {
+  composes: headerSubmit;
+  margin-right: 8px;
+}
+
+.listOrder {
+  composes: headerSubmit;
+}
+
+.userCabinet {
+  composes: headerSubmit;
+}
+.logo {
+  margin-left: auto;
+  margin-right: auto;
+}

@@ -1,0 +1,23 @@
+.info {
+  display: flex;
+  justify-content: center;
+  margin-top: 32px;
+  margin-left: 0;
+  padding-left: 0;
+}
+
+.info li {
+  min-width: 112px;
+  list-style-type: none;
+  margin-left: 20px;
+}
+.info li:last-of-type {
+  margin-left: 0px;
+}
+.info p {
+  color: #8585ad;
+}
+
+.title {
+  text-align: start;
+}
