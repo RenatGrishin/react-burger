@@ -8,3 +8,30 @@ export function connectBurgerApi(){
 function checkResponse (res) {
   return res.ok ? res.json() : res.json().then((err) => Promise.reject(err));
 }
+
+export function setOrderApi(data=[]){
+  data = {ingredients: ["60d3b41abdacab0026a733c8"]};
+  return fetch(`${BURGER_API_URL}/api/orders`, {
+    method: 'POST',
+    mode: 'cors',
+    cache: 'no-cache',
+    credentials: 'same-origin', 
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    redirect: 'follow',
+    referrerPolicy: 'no-referrer',
+    body: JSON.stringify(data)
+  }).then( res => checkResponse(res) )
+
+
+  //.then(res => res.json()).then(data=>{console.log(data)})
+
+
+  // fetch(`${BURGER_API_URL}/api/orders`, {
+  //   method: 'POST', 
+  //   body: JSON.stringify(["60d3b41abdacab0026a733c8"])
+  // })
+  // return fetch(`${BURGER_API_URL}/api/orders`, {method: 'POST'})
+  // .then( res => checkResponse(res) )
+}

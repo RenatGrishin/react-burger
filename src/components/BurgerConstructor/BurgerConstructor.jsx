@@ -6,90 +6,154 @@ import {
   ConstructorElement,
   DragIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
-import { useState } from "react";
+import { useEffect, useReducer, useState } from "react";
+import { setOrderApi } from "../../utils/burger-api.js";
 
 import Modal from "../Modal/Modal";
 import OrderDetails from "../OrderDetails/OrderDetails";
 
 import style from "./burgerConstructor.module.css";
 
-const selectedBun = "60d3b41abdacab0026a733c6";
-const selectedIngredients = [
-  "60d3b41abdacab0026a733c8",
-  "60d3b41abdacab0026a733ca",
-];
+const initialBun = {};
+const initialIngredients = [];
 
-let price = 0;
-let bun = {};
-let ingredients = [];
+function reducerBun(state, action) {
+  switch (action.type) {
+    case "add":
+      return action.ingredient;
+    default:
+      return state;
+  }
+}
+function reducerIngredients(state, action) {
+  switch (action.type) {
+    case "add":
+      return [...state, action.ingredient];
+    case "initial":
+      return action.ingredients;
+    default:
+      return state;
+  }
+}
 
 function BurgerConstructor(props) {
   const [modal, setModal] = useState(false);
+  const [price, setPrice] = useState(0);
+  const [order, setOrder] = useState({ name: "", order: { number: 0 } });
 
-  function getIngredients() {
-    bun = props.ingredients.find((elem) => elem._id === selectedBun);
+  const [stateBun, dispatchBun] = useReducer(reducerBun, initialBun);
+  const [stateIngredients, dispatchIngredients] = useReducer(
+    reducerIngredients,
+    initialIngredients
+  );
 
-    ingredients = props.ingredients.filter(
-      (ingredient) =>
-        ingredient.type !== "bun" &&
-        selectedIngredients.includes(ingredient._id)
+  useEffect(() => {
+    dispatchBun({
+      type: "add",
+      ingredient: addIngredients("60d3b41abdacab0026a733c6", true),
+    });
+    dispatchIngredients({
+      type: "initial",
+      ingredients: addInitialIngredients([
+        "60d3b41abdacab0026a733c8",
+        "60d3b41abdacab0026a733d0",
+        "60d3b41abdacab0026a733ca",
+        "60d3b41abdacab0026a733cf",
+      ]),
+    });
+  }, []);
+
+  useEffect(() => {
+    setPrice(
+      stateIngredients.reduce((sum, i) => sum + i.price, stateBun.price * 2)
     );
+  }, [stateBun, stateIngredients]);
 
-    price = bun.price * 2 + ingredients.reduce((sum, i) => sum + i.price, 0);
+  function addIngredients(id, bun = false) {
+    if (bun) {
+      return props.ingredients.find(
+        (elem) => elem._id === id && elem.type === "bun"
+      );
+    }
+    return props.ingredients.find(
+      (ing) => ing._id === id && ing.type !== "bun"
+    );
   }
-  getIngredients();
+  function addInitialIngredients(arrId) {
+    let newArr = [];
+    arrId.forEach((id) => {
+      let elem = props.ingredients.find(
+        (ing) => ing._id === id && ing.type !== "bun"
+      );
+      if (elem) newArr.push(elem);
+    });
+    return newArr;
+  }
 
   function toggleModal(val) {
     setModal(val);
+  }
+  function getOrder() {
+    setOrderApi().then((data) => {
+      setModal(true);
+      setOrder({ name: data.name, order: data.order });
+      console.log(data);
+    });
   }
 
   return (
     <section className={style.burgerConstructor}>
       <ul className={style.crateBurger}>
-        <li className={style.list}>
-          <ConstructorElement
-            type="top"
-            isLocked={true}
-            text={bun.name}
-            price={bun.price}
-            thumbnail={bun.image}
-          />
-        </li>
-        {ingredients.map((i) => (
-          <li key={i._id} className={style.list}>
-            <div className="mr-1">
-              <DragIcon type="primary" />{" "}
-            </div>
+        {Object.keys(stateBun).length > 0 && (
+          <li className={style.list}>
             <ConstructorElement
-              type={i.position}
-              isLocked={false}
-              text={i.name}
-              price={i.price}
-              thumbnail={i.image}
+              type="top"
+              isLocked={true}
+              text={stateBun.name}
+              price={stateBun.price}
+              thumbnail={stateBun.image}
             />
           </li>
-        ))}
+        )}
 
-        <li className={style.list}>
-          <ConstructorElement
-            type="button"
-            isLocked={true}
-            text={bun.name}
-            price={bun.price}
-            thumbnail={bun.image}
-          />
-        </li>
+        {stateIngredients.length > 0 &&
+          stateIngredients.map((i) => (
+            <li key={i._id} className={style.list}>
+              <div className="mr-1">
+                <DragIcon type="primary" />{" "}
+              </div>
+              <ConstructorElement
+                type={i.position}
+                isLocked={false}
+                text={i.name}
+                price={i.price}
+                thumbnail={i.image}
+              />
+            </li>
+          ))}
+
+        {Object.keys(stateBun).length > 0 && (
+          <li className={style.list}>
+            <ConstructorElement
+              type="button"
+              isLocked={true}
+              text={stateBun.name}
+              price={stateBun.price}
+              thumbnail={stateBun.image}
+            />
+          </li>
+        )}
       </ul>
       <div className={style.totalSum}>
         <p className="text text_type_digits-medium mr-2">{price}</p>
         <CurrencyIcon type="primary" />
-        <Button onClick={toggleModal} type="primary" size="large">
+        <Button onClick={getOrder} type="primary" size="large">
           Оформить заказ
         </Button>
       </div>
 
       <Modal show={modal} onClose={toggleModal}>
-        <OrderDetails />
+        <OrderDetails number={order.order.number} />
       </Modal>
     </section>
   );
