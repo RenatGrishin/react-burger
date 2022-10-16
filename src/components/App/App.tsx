@@ -2,8 +2,10 @@ import style from './App.module.css';
 import AppHeader from '../AppHeader/AppHeader';
 import BurgerIngredients from '../BurgerIngredients/BurgerIngredients';
 import BurgerConstructor from '../BurgerConstructor/BurgerConstructor';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import {connectBurgerApi} from '../../utils/burger-api.js'
+
+import {DataContext} from '../../services/dataContext';
 
 function App() {
   const [status, setStatus] = useState("Материализация ингредиентов...");
@@ -28,13 +30,14 @@ function App() {
     <div className={style.app}>
       <AppHeader />
       <main className={style.wrapper}>
+        <DataContext.Provider value={{data}}>
         {
         loadingData ? <h1>{status}</h1> : <>
-          <BurgerIngredients ingredients={data} />
-          <BurgerConstructor ingredients={data} />
+          <BurgerIngredients />
+          <BurgerConstructor />
         </> 
         }
-        
+        </DataContext.Provider>
       </main>
     </div>
     

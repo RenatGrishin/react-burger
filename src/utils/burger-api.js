@@ -23,15 +23,4 @@ export function setOrderApi(data=[]){
     referrerPolicy: 'no-referrer',
     body: JSON.stringify(data)
   }).then( res => checkResponse(res) )
-
-
-  //.then(res => res.json()).then(data=>{console.log(data)})
-
-
-  // fetch(`${BURGER_API_URL}/api/orders`, {
-  //   method: 'POST', 
-  //   body: JSON.stringify(["60d3b41abdacab0026a733c8"])
-  // })
-  // return fetch(`${BURGER_API_URL}/api/orders`, {method: 'POST'})
-  // .then( res => checkResponse(res) )
 }

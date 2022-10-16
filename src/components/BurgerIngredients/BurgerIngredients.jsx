@@ -1,3 +1,4 @@
+import { useContext } from "react";
 import BurgerTabs from "../BurgerTabs/BurgerTabs";
 import Ingredient from "../Ingredient/Ingredient";
 import PropTypes from "prop-types";
@@ -5,10 +6,14 @@ import { burgerPropTypes } from "../../prop-types";
 
 import style from "./burgerIngredients.module.css";
 
-function BurgerIngredients(props) {
-  const bun = props.ingredients.filter((arr) => arr.type === "bun");
-  const mains = props.ingredients.filter((arr) => arr.type === "main");
-  const sauces = props.ingredients.filter((arr) => arr.type === "sauce");
+import { DataContext } from "../../services/dataContext";
+
+function BurgerIngredients() {
+  const { data } = useContext(DataContext);
+
+  const bun = data.filter((arr) => arr.type === "bun");
+  const mains = data.filter((arr) => arr.type === "main");
+  const sauces = data.filter((arr) => arr.type === "sauce");
 
   return (
     <section className={style.burgerIngredients}>
@@ -46,10 +51,5 @@ function BurgerIngredients(props) {
     </section>
   );
 }
-
-BurgerIngredients.propTypes = {
-  ingredients: PropTypes.arrayOf(PropTypes.shape(burgerPropTypes).isRequired)
-    .isRequired,
-};
 
 export default BurgerIngredients;

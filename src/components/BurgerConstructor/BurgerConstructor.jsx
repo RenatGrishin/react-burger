@@ -6,11 +6,12 @@ import {
   ConstructorElement,
   DragIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
-import { useEffect, useReducer, useState } from "react";
+import { useEffect, useReducer, useState, useContext } from "react";
 import { setOrderApi } from "../../utils/burger-api.js";
 
 import Modal from "../Modal/Modal";
 import OrderDetails from "../OrderDetails/OrderDetails";
+import { DataContext } from "../../services/dataContext";
 
 import style from "./burgerConstructor.module.css";
 
@@ -36,7 +37,8 @@ function reducerIngredients(state, action) {
   }
 }
 
-function BurgerConstructor(props) {
+function BurgerConstructor() {
+  const { data } = useContext(DataContext);
   const [modal, setModal] = useState(false);
   const [price, setPrice] = useState(0);
   const [order, setOrder] = useState({ name: "", order: { number: 0 } });
@@ -71,20 +73,14 @@ function BurgerConstructor(props) {
 
   function addIngredients(id, bun = false) {
     if (bun) {
-      return props.ingredients.find(
-        (elem) => elem._id === id && elem.type === "bun"
-      );
+      return data.find((elem) => elem._id === id && elem.type === "bun");
     }
-    return props.ingredients.find(
-      (ing) => ing._id === id && ing.type !== "bun"
-    );
+    return data.find((ing) => ing._id === id && ing.type !== "bun");
   }
   function addInitialIngredients(arrId) {
     let newArr = [];
     arrId.forEach((id) => {
-      let elem = props.ingredients.find(
-        (ing) => ing._id === id && ing.type !== "bun"
-      );
+      let elem = data.find((ing) => ing._id === id && ing.type !== "bun");
       if (elem) newArr.push(elem);
     });
     return newArr;
@@ -159,10 +155,5 @@ function BurgerConstructor(props) {
     </section>
   );
 }
-
-BurgerConstructor.propTypes = {
-  ingredients: PropTypes.arrayOf(PropTypes.shape(burgerPropTypes).isRequired)
-    .isRequired,
-};
 
 export default BurgerConstructor;
