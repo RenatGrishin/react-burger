@@ -27,28 +27,24 @@ function Modal(props) {
   }
 
   return ReactDOM.createPortal(
-    <>
-      {props.show && (
-        <div className={style.modalWindow}>
-          <ModalOverlay
-            onClose={() => {
-              props.onClose(false);
-            }}
-          />
-          <section onClick={stopClick} className={style.modal}>
-            <div
-              className={style.close}
-              onClick={() => {
-                props.onClose(false);
-              }}
-            >
-              <CloseIcon type="primary" />
-            </div>
-            {props.children}
-          </section>
+    <div className={style.modalWindow}>
+      <ModalOverlay
+        onClose={() => {
+          props.onClose(false);
+        }}
+      />
+      <section onClick={stopClick} className={style.modal}>
+        <div
+          className={style.close}
+          onClick={() => {
+            props.onClose(false);
+          }}
+        >
+          <CloseIcon type="primary" />
         </div>
-      )}
-    </>,
+        {props.children}
+      </section>
+    </div>,
     modalsElement
   );
 }

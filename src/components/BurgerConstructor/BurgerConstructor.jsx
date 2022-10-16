@@ -97,7 +97,6 @@ function BurgerConstructor(props) {
     setOrderApi().then((data) => {
       setModal(true);
       setOrder({ name: data.name, order: data.order });
-      console.log(data);
     });
   }
 
@@ -152,9 +151,11 @@ function BurgerConstructor(props) {
         </Button>
       </div>
 
-      <Modal show={modal} onClose={toggleModal}>
-        <OrderDetails number={order.order.number} />
-      </Modal>
+      {modal && (
+        <Modal show={modal} onClose={toggleModal}>
+          <OrderDetails number={order.order.number} />
+        </Modal>
+      )}
     </section>
   );
 }
