@@ -63,7 +63,13 @@ function BurgerConstructor() {
       (elem) => elem.keyId !== keyId
     );
 
-    if (newArr.length === 0) return;
+    if (newArr.length === 0) {
+      dispatch({
+        type: CONSTRUCTOR_INGREDIENT_DELETE_INGREDIENTS,
+        ingredients: newArr,
+      });
+      return;
+    }
 
     for (let i = 0; i < newArr.length; i++) {
       newArr[i].sortNum = i;
@@ -122,16 +128,15 @@ function BurgerConstructor() {
     }
   }
 
-  function toggleModal(val) {
-    if (val) {
-      dispatch({
-        type: MODAL_ORDER_OPEN,
-      });
-    } else {
-      dispatch({
-        type: MODAL_ORDER_CLOSE,
-      });
-    }
+  function onShowModal() {
+    dispatch({
+      type: MODAL_ORDER_OPEN,
+    });
+  }
+  function onCloseModal() {
+    dispatch({
+      type: MODAL_ORDER_CLOSE,
+    });
   }
 
   function getIngredientsListForApi() {
@@ -149,7 +154,7 @@ function BurgerConstructor() {
 
     setOrderApi(ingredientsList).then((data) => {
       dispatch({ type: MODAL_ORDER_SET, number: data.order.number });
-      toggleModal(true);
+      onShowModal();
     });
   }
 
@@ -199,7 +204,7 @@ function BurgerConstructor() {
           </div>
 
           {modal.order.show && (
-            <Modal show={modal.order.show}>
+            <Modal show={modal.order.show} onClose={onCloseModal}>
               <OrderDetails number={modal.order.number} />
             </Modal>
           )}

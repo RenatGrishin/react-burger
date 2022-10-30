@@ -6,6 +6,7 @@ import { useDrag, useDrop } from "react-dnd";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import PropTypes from "prop-types";
+import { burgerPropTypesConstructorList } from "../../prop-types";
 
 import {
   CONSTRUCTOR_INGREDIENT_REPLACE,
@@ -114,7 +115,7 @@ export default function ConstructorList(props) {
 }
 
 ConstructorList.propTypes = {
-  data: PropTypes.object.isRequired,
+  data: PropTypes.shape(burgerPropTypesConstructorList).isRequired,
   deleteIngredient: PropTypes.func.isRequired,
   type: PropTypes.string,
 };

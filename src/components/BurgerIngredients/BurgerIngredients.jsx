@@ -6,6 +6,7 @@ import {
   DATA_REQUEST,
   DATA_ERROR,
   INGREDIENT_TAB_SET,
+  MODAL_INGREDIENT_CLOSE,
 } from "../../services/actions.js";
 
 import { MODAL_INGREDIENT_OPEN } from "../../services/actions.js";
@@ -64,6 +65,11 @@ function BurgerIngredients() {
       ingredient: data,
     });
   }
+  function closeModal() {
+    dispatch({
+      type: MODAL_INGREDIENT_CLOSE,
+    });
+  }
 
   return (
     <section className={style.burgerIngredients}>
@@ -115,7 +121,7 @@ function BurgerIngredients() {
             </div>
           </section>
           {modal.ingredient.show && (
-            <Modal show={modal.ingredient.show}>
+            <Modal show={modal.ingredient.show} onClose={closeModal}>
               <IngredientDetails data={modal.ingredient.data} />
             </Modal>
           )}
