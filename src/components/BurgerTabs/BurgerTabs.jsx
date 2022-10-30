@@ -1,20 +1,34 @@
 import { Tab } from "@ya.praktikum/react-developer-burger-ui-components";
 import style from "./burgerTabs.module.css";
+import { useSelector } from "react-redux";
+import { useEffect } from "react";
 
 function BurgerTabs() {
-  function onTabClick(e) {
-    console.log(e);
-  }
+  const ingredientTab = useSelector(
+    (state) => state.ingredientTabReducer.ingredientTab
+  );
 
   return (
     <nav className={style.navigation}>
-      <Tab value="one" active={true} onClick={onTabClick}>
+      <Tab
+        value="buns"
+        active={ingredientTab === "buns" ? true : false}
+        onClick={() => {}}
+      >
         Булки
       </Tab>
-      <Tab value="two" active={false} onClick={onTabClick}>
+      <Tab
+        value="sauces"
+        active={ingredientTab === "sauces" ? true : false}
+        onClick={() => {}}
+      >
         Соусы
       </Tab>
-      <Tab value="three" active={false} onClick={onTabClick}>
+      <Tab
+        value="fillings"
+        active={ingredientTab === "fillings" ? true : false}
+        onClick={() => {}}
+      >
         Начинки
       </Tab>
     </nav>

@@ -1,0 +1,11 @@
+.list {
+  list-style-type: none;
+  display: flex;
+  align-items: center;
+  justify-content: end;
+}
+.listWidth {
+  width: 536px;
+  display: flex;
+  justify-content: flex-end;
+}

@@ -2,105 +2,124 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   CurrencyIcon,
   Button,
-  ConstructorElement,
-  DragIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
-import { useEffect, useReducer, useState, useContext } from "react";
+import { useEffect } from "react";
 import { setOrderApi } from "../../utils/burger-api.js";
 import {
-  CONSTRUCTOR_INGREDIENT_INITIAL,
   CONSTRUCTOR_INGREDIENT_PRICE_SET,
   MODAL_ORDER_OPEN,
   MODAL_ORDER_CLOSE,
   MODAL_ORDER_SET,
+  CONSTRUCTOR_INGREDIENT_ADD_BUN,
+  CONSTRUCTOR_INGREDIENT_ADD_INGREDIENTS,
+  CONSTRUCTOR_INGREDIENT_DELETE_INGREDIENTS,
 } from "../../services/actions.js";
+import { useDrop } from "react-dnd";
 
 import Modal from "../Modal/Modal";
 import OrderDetails from "../OrderDetails/OrderDetails";
+import ConstructorList from "../ConstructorList/ConstructorList";
 
 import style from "./burgerConstructor.module.css";
 
-const initialBun = {};
-const initialIngredients = [];
-
-function reducerBun(state, action) {
-  switch (action.type) {
-    case "add":
-      return action.ingredient;
-    default:
-      return state;
-  }
-}
-function reducerIngredients(state, action) {
-  switch (action.type) {
-    case "add":
-      return [...state, action.ingredient];
-    case "initial":
-      return action.ingredients;
-    default:
-      return state;
-  }
-}
-
 function BurgerConstructor() {
-  const data = useSelector((store) => store.dataList.data);
-  //const [modal, setModal] = useState(false);
-  const [order, setOrder] = useState({ name: "", order: { number: 0 } });
-
-  const [stateBun, dispatchBun] = useReducer(reducerBun, initialBun);
-  const [stateIngredients, dispatchIngredients] = useReducer(
-    reducerIngredients,
-    initialIngredients
-  );
-
   const dataStatus = useSelector((store) => store.dataList.dataStatus);
   const constructor = useSelector((store) => store.constructorEdit.constructor);
   const modal = useSelector((state) => state.modalWindow.modal);
+  const dnd = useSelector((state) => state.dndReducer.dnd);
 
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch({
-      type: CONSTRUCTOR_INGREDIENT_INITIAL,
-      bun: addIngredients("60d3b41abdacab0026a733c6", true),
-      ingredients: addInitialIngredients([
-        "60d3b41abdacab0026a733c8",
-        "60d3b41abdacab0026a733d0",
-        "60d3b41abdacab0026a733ca",
-        "60d3b41abdacab0026a733cf",
-      ]),
-    });
-  }, [dataStatus]);
+  const [, dropTarget] = useDrop({
+    accept: "ingredient",
+    drop() {
+      addIngredients(dnd.ingredient);
+    },
+  });
 
   useEffect(() => {
+    dispatch({
+      type: CONSTRUCTOR_INGREDIENT_PRICE_SET,
+      price: getPrice(constructor.bun, constructor.ingredients),
+    });
+  }, [constructor.bun, constructor.ingredients]);
+
+  function addIngredients(ingredient) {
+    if (ingredient.type === "bun") {
+      dispatch({
+        type: CONSTRUCTOR_INGREDIENT_ADD_BUN,
+        bun: ingredient,
+      });
+    } else {
+      dispatch({
+        type: CONSTRUCTOR_INGREDIENT_ADD_INGREDIENTS,
+        ingredient: createIdAndSortIngredient(ingredient),
+      });
+    }
+  }
+
+  function deleteIngredient(keyId) {
+    const newArr = constructor.ingredients.filter(
+      (elem) => elem.keyId !== keyId
+    );
+
+    if (newArr.length === 0) return;
+
+    for (let i = 0; i < newArr.length; i++) {
+      newArr[i].sortNum = i;
+    }
+    dispatch({
+      type: CONSTRUCTOR_INGREDIENT_DELETE_INGREDIENTS,
+      ingredients: newArr,
+    });
+  }
+
+  function createIdAndSortIngredient(ingredient) {
+    let randKeyId = Math.floor(Math.random() * 99);
+    let original = false;
+    let sortNum = 0;
+
+    if (constructor.ingredients.length > 0) {
+      do {
+        original = constructor.ingredients.find(
+          (ing) => ing.keyId === randKeyId
+        )
+          ? false
+          : true;
+      } while (!original);
+
+      sortNum =
+        constructor.ingredients[constructor.ingredients.length - 1].sortNum + 1;
+    }
+    return {
+      ...ingredient,
+      keyId: randKeyId,
+      sortNum: sortNum,
+    };
+  }
+
+  function getPrice() {
     if (
-      typeof constructor.bun === "object" &&
       Object.keys(constructor.bun).length > 0 &&
       constructor.ingredients.length > 0
     ) {
-      dispatch({
-        type: CONSTRUCTOR_INGREDIENT_PRICE_SET,
-        price: constructor.ingredients.reduce(
-          (sum, i) => sum + i.price,
-          constructor.bun.price * 2
-        ),
-      });
+      return constructor.ingredients.reduce(
+        (sum, i) => sum + i.price,
+        constructor.bun.price * 2
+      );
+    } else if (
+      Object.keys(constructor.bun).length === 0 &&
+      constructor.ingredients.length > 0
+    ) {
+      return constructor.ingredients.reduce((sum, i) => sum + i.price, 0);
+    } else if (
+      Object.keys(constructor.bun).length > 0 &&
+      constructor.ingredients.length === 0
+    ) {
+      return constructor.bun.price * 2;
+    } else {
+      return 0;
     }
-  }, [constructor.bun, constructor.ingredients]);
-
-  function addIngredients(id, bun = false) {
-    if (bun) {
-      return data.find((elem) => elem._id === id && elem.type === "bun");
-    }
-    return data.find((ing) => ing._id === id && ing.type !== "bun");
-  }
-  function addInitialIngredients(arrId) {
-    let newArr = [];
-    arrId.forEach((id) => {
-      let elem = data.find((ing) => ing._id === id && ing.type !== "bun");
-      if (elem) newArr.push(elem);
-    });
-    return newArr;
   }
 
   function toggleModal(val) {
@@ -135,7 +154,7 @@ function BurgerConstructor() {
   }
 
   return (
-    <section className={style.burgerConstructor}>
+    <section className={style.burgerConstructor} ref={dropTarget}>
       {dataStatus.loading || dataStatus.error ? (
         <h1>{dataStatus.text}</h1>
       ) : (
@@ -143,44 +162,30 @@ function BurgerConstructor() {
           <ul className={style.crateBurger}>
             {typeof constructor.bun === "object" &&
               Object.keys(constructor.bun).length > 0 && (
-                <li className={style.list}>
-                  <ConstructorElement
-                    type="top"
-                    isLocked={true}
-                    text={constructor.bun.name}
-                    price={constructor.bun.price}
-                    thumbnail={constructor.bun.image}
-                  />
-                </li>
+                <ConstructorList
+                  data={constructor.bun}
+                  deleteIngredient={deleteIngredient}
+                  type="top"
+                />
               )}
 
             {constructor.ingredients.length > 0 &&
               constructor.ingredients.map((i) => (
-                <li key={i._id} className={style.list}>
-                  <div className="mr-1">
-                    <DragIcon type="primary" />{" "}
-                  </div>
-                  <ConstructorElement
-                    type={i.position}
-                    isLocked={false}
-                    text={i.name}
-                    price={i.price}
-                    thumbnail={i.image}
-                  />
-                </li>
+                <ConstructorList
+                  data={i}
+                  key={i.keyId}
+                  isLocked={false}
+                  deleteIngredient={deleteIngredient}
+                />
               ))}
 
             {typeof constructor.bun === "object" &&
               Object.keys(constructor.bun).length > 0 && (
-                <li className={style.list}>
-                  <ConstructorElement
-                    type="button"
-                    isLocked={true}
-                    text={constructor.bun.name}
-                    price={constructor.bun.price}
-                    thumbnail={constructor.bun.image}
-                  />
-                </li>
+                <ConstructorList
+                  data={constructor.bun}
+                  deleteIngredient={deleteIngredient}
+                  type="bottom"
+                />
               )}
           </ul>
           <div className={style.totalSum}>
@@ -194,7 +199,7 @@ function BurgerConstructor() {
           </div>
 
           {modal.order.show && (
-            <Modal show={modal} onClose={toggleModal}>
+            <Modal show={modal.order.show}>
               <OrderDetails number={modal.order.number} />
             </Modal>
           )}
