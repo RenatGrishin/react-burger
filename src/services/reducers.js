@@ -20,6 +20,8 @@ import {
 } from "./actions.js";
 import { initialState } from "./state";
 
+import { connectBurgerApi } from "../utils/burger-api.js";
+
 const dataList = (state = initialState, action) => {
   switch (action.type) {
     case DATA_SUCCESS: {
@@ -235,6 +237,8 @@ const ingredientTabReducer = (state=initialState, action) => {
     }
   }
 }
+
+
 
 export const rootReducer = combineReducers({
   dataList,

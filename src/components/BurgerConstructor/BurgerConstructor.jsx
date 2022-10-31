@@ -4,17 +4,15 @@ import {
   Button,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import { useEffect } from "react";
-import { setOrderApi } from "../../utils/burger-api.js";
 import {
   CONSTRUCTOR_INGREDIENT_PRICE_SET,
-  MODAL_ORDER_OPEN,
   MODAL_ORDER_CLOSE,
-  MODAL_ORDER_SET,
   CONSTRUCTOR_INGREDIENT_ADD_BUN,
   CONSTRUCTOR_INGREDIENT_ADD_INGREDIENTS,
   CONSTRUCTOR_INGREDIENT_DELETE_INGREDIENTS,
 } from "../../services/actions.js";
 import { useDrop } from "react-dnd";
+import { getOrderThunk } from "../../services/actions/actionCreators.js";
 
 import Modal from "../Modal/Modal";
 import OrderDetails from "../OrderDetails/OrderDetails";
@@ -128,11 +126,6 @@ function BurgerConstructor() {
     }
   }
 
-  function onShowModal() {
-    dispatch({
-      type: MODAL_ORDER_OPEN,
-    });
-  }
   function onCloseModal() {
     dispatch({
       type: MODAL_ORDER_CLOSE,
@@ -152,10 +145,7 @@ function BurgerConstructor() {
   function getOrder() {
     const ingredientsList = getIngredientsListForApi();
 
-    setOrderApi(ingredientsList).then((data) => {
-      dispatch({ type: MODAL_ORDER_SET, number: data.order.number });
-      onShowModal();
-    });
+    getOrderThunk(dispatch, ingredientsList);
   }
 
   return (
@@ -198,7 +188,12 @@ function BurgerConstructor() {
               {constructor.price}
             </p>
             <CurrencyIcon type="primary" />
-            <Button onClick={getOrder} type="primary" size="large">
+            <Button
+              onClick={getOrder}
+              type="primary"
+              size="large"
+              htmlType="button"
+            >
               Оформить заказ
             </Button>
           </div>

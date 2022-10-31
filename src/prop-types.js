@@ -17,6 +17,6 @@ export const burgerPropTypes = {
 
 export const burgerPropTypesConstructorList = {
   ...burgerPropTypes,
-  keyId: PropTypes.number.isRequired,
-  sortNum: PropTypes.number.isRequired,
+  keyId: PropTypes.number,
+  sortNum: PropTypes.number,
 }

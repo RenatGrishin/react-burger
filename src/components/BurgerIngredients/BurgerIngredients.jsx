@@ -1,15 +1,13 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
-import { connectBurgerApi } from "../../utils/burger-api.js";
 import {
-  DATA_SUCCESS,
-  DATA_REQUEST,
-  DATA_ERROR,
   INGREDIENT_TAB_SET,
   MODAL_INGREDIENT_CLOSE,
+  MODAL_INGREDIENT_OPEN,
 } from "../../services/actions.js";
 
-import { MODAL_INGREDIENT_OPEN } from "../../services/actions.js";
+import { getIngredientsThunk } from "../../services/actions/actionCreators.js";
+
 import { useInView } from "react-intersection-observer";
 
 import BurgerTabs from "../BurgerTabs/BurgerTabs";
@@ -23,9 +21,6 @@ function BurgerIngredients() {
   const data = useSelector((store) => store.dataList.data);
   const dataStatus = useSelector((store) => store.dataList.dataStatus);
   const modal = useSelector((state) => state.modalWindow.modal);
-  const ingredientTab = useSelector(
-    (state) => state.ingredientTabReducer.ingredientTab
-  );
 
   const dispatch = useDispatch();
 
@@ -34,15 +29,7 @@ function BurgerIngredients() {
   const [saucesRef, inViewSauces] = useInView({ threshold: 0 });
 
   useEffect(() => {
-    dispatch({ type: DATA_REQUEST });
-    connectBurgerApi()
-      .then((data) => {
-        dispatch({ type: DATA_SUCCESS, data: data.data });
-      })
-      .catch((error) => {
-        dispatch({ type: DATA_ERROR });
-        console.error(error);
-      });
+    getIngredientsThunk(dispatch);
   }, []);
 
   useEffect(() => {
